@@ -1,0 +1,39 @@
+# Write Kubernetes Deployment Script
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: python-app
+  template:
+    metadata:
+      labels:
+        app: python-app
+    spec:
+      containers: 
+      - name: python-app
+        image: my-python-app:latest
+        imagePullPolicy: Never
+        env:
+        - name: PORT
+          value: "8000"
+        - name: DATABASE_URL
+          value: "postgresql://library_xcyq_user:uHxUaubUwLFIn5q594wI3Qg35HUATmkV@dpg-cr4ovod2ng1s73e4r79g-a.singapore-postgres.render.com/library_xcyq"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: python-app
+spec:
+  selector:
+    app: python-app
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+      nodePort: 30000
